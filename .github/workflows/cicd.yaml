@@ -1,0 +1,59 @@
+name: CI/CD for Spring Boot Application
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  APP_NAME: grex-springboot-app
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from GitHub repository
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      # Set up JDK 17 (or other versions you are using)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      # Cache Maven dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven
+
+      # Build the project and package into WAR
+      - name: Build with Maven
+        run: mvn clean package
+
+      # Extract version and artifactId from pom.xml
+      - name: Extract version and artifactId
+        id: vars
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          artifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          timestamp=$(date +%Y%m%d%H%M%S)
+          echo "VERSION=${version}" >> $GITHUB_ENV
+          echo "ARTIFACT_ID=${artifactId}" >> $GITHUB_ENV
+          echo "TIMESTAMP=${timestamp}" >> $GITHUB_ENV
+
+      # Publish to GitHub Packages
+      - name: Publish WAR to GitHub Packages
+        run: |
+          mvn deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{ github.actor }}
+          MAVEN_PASSWORD: ${{ secrets.ORG_CICD_TOKEN}}
+
