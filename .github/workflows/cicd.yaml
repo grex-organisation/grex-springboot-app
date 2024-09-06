@@ -16,9 +16,10 @@ jobs:
       - name: Check GitHub Token
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_CICD_TOKEN : ${{ secrets.ORG_CICD_TOKEN }}
         run: |
-          echo "Checking GitHub Token... $$GITHUB_TOKEN"
-          echo "Checking CICD Token... $$ORG_CICD_TOKEN"
+          echo "Checking GitHub Token..." $$GITHUB_TOKEN
+          echo "Checking CICD Token..." $$ORG_CICD_TOKEN
 
       # Checkout the code from GitHub repository
       - name: Checkout source code
