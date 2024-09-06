@@ -13,6 +13,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check GitHub Token
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Checking GitHub Token... $$GITHUB_TOKEN"
+          echo "Checking CICD Token... $$ORG_CICD_TOKEN"
+
       # Checkout the code from GitHub repository
       - name: Checkout source code
         uses: actions/checkout@v3
