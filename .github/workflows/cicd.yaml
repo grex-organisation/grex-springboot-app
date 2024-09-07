@@ -33,20 +33,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven
 
-      # Build the project and package into WAR
+      # Build the project and package
       - name: Build with Maven
         run: mvn clean package
 
-      # Extract version and artifactId from pom.xml
-      - name: Extract version and artifactId
-        id: vars
-        run: |
-          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          artifactId=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
-          timestamp=$(date +%Y%m%d%H%M%S)
-          echo "VERSION=${version}" >> $GITHUB_ENV
-          echo "ARTIFACT_ID=${artifactId}" >> $GITHUB_ENV
-          echo "TIMESTAMP=${timestamp}" >> $GITHUB_ENV
 
       # Publish to GitHub Packages
       - name: Publish WAR to GitHub Packages
