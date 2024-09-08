@@ -80,16 +80,16 @@ jobs:
 
       # Build Docker image
       - name: Build Docker image
-        run:  docker build . -t ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-{{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }}
+        run:  docker build . -t ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }} - < Dockerfile
 
       # Push Docker image to GitHub Container Registry
       - name: Push Docker image
-        run:  docker push ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-{{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }}
+        run:  docker push ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }}
 
 
       # Tag Docker image with `latest` tag
       - name: Tag Docker image as latest
         run: |
-          docker tag ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-{{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }}   ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-{{env.DOCKER_IMAGE_SUFFIX}}:latest
-          docker push ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-{{env.DOCKER_IMAGE_SUFFIX}}:latest
+          docker tag ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }}   ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
+          docker push ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
 
