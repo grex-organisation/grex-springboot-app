@@ -80,7 +80,7 @@ jobs:
 
       # Build Docker image
       - name: Build Docker image
-        run:  docker build . -t ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }} - < Dockerfile
+        run:  docker build . -t ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }}
 
       # Push Docker image to GitHub Container Registry
       - name: Push Docker image
