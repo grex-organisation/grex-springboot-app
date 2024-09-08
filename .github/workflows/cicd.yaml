@@ -11,9 +11,6 @@ env:
   MAVEN_REPO: grex-organisation/maven-package-registry
   DOCKER_REPO: grex-organisation/docker-container-registry
   DOCKER_IMAGE_SUFFIX: image-docker
-  BUILD_TIMESTAMP: ${{ format('DDMMYYYYHHmm', github.event.timestamp) }}
-  #WAR_FILE_NAME: ${{ APP_NAME }}-${{ BUILD_TIMESTAMP }}.war
-  #DOCKER_TAG: ${{ BUILD_TIMESTAMP }}
   MAVEN_USERNAME: ${{ github.actor }}
   MAVEN_PASSWORD: ${{ secrets.ORG_CICD_TOKEN }}
 
@@ -23,6 +20,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Generate timestamp in a step
+      - name: Generate build timestamp
+        run: |
+            TIMESTAMP=$(date +'%d%m%Y%H%M')
+            echo "BUILD_TIMESTAMP=${TIMESTAMP}" >> $GITHUB_ENV
+
       # Checkout the code from GitHub repository
       - name: Checkout source code
         uses: actions/checkout@v3
