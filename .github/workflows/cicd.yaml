@@ -96,16 +96,14 @@ jobs:
           docker tag ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:${{ env.BUILD_TIMESTAMP }}   ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
           docker push ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
 
-
       # Prepare SSH key
       - name: Setup SSH key
         run: |
           echo "${{ secrets.ORG_EC2_SSH_TOKEN }}" | base64 --decode > /tmp/aws_ec2_key.pem
           chmod 600 /tmp/aws_ec2_key.pem
 
-
       # Copy Docker Compose files and deploy on EC2 instances
       - name: Deploy to EC2 Instance 1
         run: |
-          ssh -i /tmp/aws_ec2_key.pem ec2-user@${{ secrets.EC2_HOST_IP }} "docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest"
+          ssh -i /tmp/aws_ec2_key.pem ec2-user@${{ secrets.EC2_HOST_IP }} "sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest"
 
