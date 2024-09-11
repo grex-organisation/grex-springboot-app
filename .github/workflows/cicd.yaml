@@ -102,7 +102,7 @@ jobs:
           echo ${{ secrets.ORG_EC2_SSH_TOKEN }} | base64 --decode > /tmp/aws_ec2_key.pem
           chmod 600 /tmp/aws_ec2_key.pem
           cat /tmp/aws_ec2_key.pem
-          cat "------------------------------------"
+          echo ${{ github.actor }}
           cat ${{ secrets.ORG_EC2_SSH_TOKEN }}
 
       # Copy Docker Compose files and deploy on EC2 instances
