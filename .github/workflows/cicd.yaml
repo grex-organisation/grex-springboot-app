@@ -103,10 +103,6 @@ jobs:
           echo "${{ secrets.ORG_EC2_SSH_TOKEN }}" | base64 --decode > /tmp/aws_ec2_key.pem
           chmod 600 /tmp/aws_ec2_key.pem
 
-      # Add EC2 instances to known hosts to avoid SSH prompt
-      - name: Add EC2 instances to known hosts
-        run: |
-          ssh-keyscan -H ${{ secrets.EC2_HOST_IP }} >> ~/.ssh/known_hosts
 
       # Copy Docker Compose files and deploy on EC2 instances
       - name: Deploy to EC2 Instance 1
