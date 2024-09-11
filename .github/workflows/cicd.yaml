@@ -106,8 +106,7 @@ jobs:
       - name: Deploy to EC2 Instance 1
         run: |
           ssh -t -o StrictHostKeyChecking=no -i /tmp/aws_ec2_key.pem ec2-user@${{ secrets.EC2_HOST_IP }} 
-          sudo docker stop ${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest || true
-          sudo docker rm ${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest || true
+          echo ${{ secrets.ORG_CICD_TOKEN }} | docker login ${{ env.REGISTRY_URL }} -u ${{ github.actor }} --password-stdin
           sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
           sudo docker run -d --name ${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}} -p 8080:8080
 
