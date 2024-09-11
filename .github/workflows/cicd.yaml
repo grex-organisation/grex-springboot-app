@@ -105,5 +105,9 @@ jobs:
       # Copy Docker Compose files and deploy on EC2 instances
       - name: Deploy to EC2 Instance 1
         run: |
-          ssh -i /tmp/aws_ec2_key.pem ec2-user@${{ secrets.EC2_HOST_IP }} "sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest"
+          ssh -o StrictHostKeyChecking=no -i /tmp/aws_ec2_key.pem ec2-user@${{ secrets.EC2_HOST_IP }} 
+          sudo docker stop ${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest || true
+          sudo docker rm ${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest || true
+          sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
+          sudo docker run -d --name ${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}} -p 8080:8080
 
