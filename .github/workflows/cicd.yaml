@@ -111,6 +111,5 @@ jobs:
       # Copy Docker Compose files and deploy on EC2 instances
       - name: Deploy to EC2 Instance 1
         run: |
-#          scp -i /tmp/aws_ec2_key.pem -r ./docker-compose.yml ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST1 }}:/home/${{ secrets.AWS_EC2_USER }}/docker-compose.yml
           ssh -i /tmp/aws_ec2_key.pem ec2-user@${{ secrets.EC2_HOST_IP }} "docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest"
 
