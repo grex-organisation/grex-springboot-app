@@ -110,5 +110,5 @@ jobs:
             sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
             sudo docker stop ${{ env.APP_NAME }} || true
             sudo docker rm ${{ env.APP_NAME }} || true
-            sudo docker run -d --name ${{ env.APP_NAME }} -p 8080:8080 ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
+            sudo docker run -d --name ${{ env.APP_NAME }} -p 80:8080 ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
           EOF
