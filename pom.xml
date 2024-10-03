@@ -18,6 +18,13 @@
 		<java.version>11</java.version>
 	</properties>
 
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/grex-organisation/maven-package-registry</url>
+		</repository>
+	</distributionManagement>
+
 	<dependencies>
 
 		<dependency>
