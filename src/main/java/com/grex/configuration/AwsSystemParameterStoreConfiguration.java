@@ -41,6 +41,17 @@ public class AwsSystemParameterStoreConfiguration {
         return getParameterValue("DB_PLATFORM", false);
     }
 
+    @Bean
+    public String getJwtSecretExpiry() {
+        return getParameterValue("JWT_SECRET_EXPIRY", false);
+    }
+
+    @Bean
+    public String getJwtSecretKey() {
+        return getParameterValue("JWT_SECRET_KEY", false);
+    }
+
+
     private String getParameterValue(String parameterName, boolean isSecureString) {
         GetParameterRequest request = GetParameterRequest.builder()
                 .name(parameterName)
