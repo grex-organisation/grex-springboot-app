@@ -1,0 +1,22 @@
+groups:
+  groups:
+    - groupId: "g1"
+      words:
+        - wordId: "g1w1"
+          word: "example"
+          meaning: "a representative form or pattern"
+          synonyms:
+            - "sample"
+            - "specimen"
+          examples:
+            - "This is an example sentence."
+    - groupId: "g2"
+      words:
+        - wordId: "g2w1"
+          word: "apple"
+          meaning: "a round fruit with red or green skin"
+          synonyms:
+            - "fruit"
+            - "pome"
+          examples:
+            - "She ate an apple."

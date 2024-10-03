@@ -2,12 +2,13 @@ package com.grex;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
-public class GrexSpringbootAppApplication {
+public class GrexAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GrexSpringbootAppApplication.class, args);
+		SpringApplication.run(GrexAppApplication.class, args);
 	}
 
 }
