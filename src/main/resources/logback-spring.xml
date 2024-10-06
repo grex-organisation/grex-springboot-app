@@ -1,0 +1,42 @@
+<configuration>
+
+    <!-- Log pattern -->
+    <springProfile name="dev">
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>logs/grex-springboot-app.log</file>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="info">
+            <appender-ref ref="FILE" />
+        </root>
+    </springProfile>
+
+    <springProfile name="live">
+        <!-- EC2 log file inside docker -->
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>log/grex-springboot-app.log</file>  <!-- docker container path directory, need to map it with EC2 -->
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- CloudWatch Appender -->
+        <!-- Replace with your AWS region -->
+        <!--<appender name="CLOUDWATCH" class="com.amazonaws.services.logs.logback.CloudWatchAppender">
+            <region>us-west-2</region>
+            <logGroupName>my-springboot-logs</logGroupName>
+            <logStreamName>live-stream</logStreamName>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+            </encoder>
+        </appender> -->
+
+        <root level="info">
+            <appender-ref ref="FILE" />
+           <!-- <appender-ref ref="CLOUDWATCH" /> -->
+        </root>
+    </springProfile>
+
+</configuration>

@@ -12,6 +12,8 @@ import com.grex.user.model.GrexUser;
 import com.grex.user.service.GrexUserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -53,62 +55,91 @@ public class GrexUserController {
         this.emailService = emailService;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(GrexUserController.class);
+
     @PostMapping("/signup")
     public void signUp(@RequestBody @NotNull @Valid final RegisterUserDto registerUserDto) {
+
+        logger.info("Entered signup method");
 
         final String stageName = registerUserDto.getUserName().trim();
         final String email = registerUserDto.getEmail().trim();
         final String password = passwordEncoder.encode(registerUserDto.getPassword().trim());
 
-        //check user email or stageName already exits
-        if(!grexUserService.checkEmailOrStageNameAlreadyExists(email,stageName)){
+        logger.debug("entered signup email:" + email + ",stage name:" + stageName + ",password: ********");
 
-        // if username or stageName do not already exist then generate OTP and send on email to verify user.
+        boolean isPresent = grexUserService.checkEmailOrStageNameAlreadyExists(email, stageName);
+
+        logger.debug("email or username already present:" + !isPresent);
+
+        if (!isPresent) {
+
             String otp = OtpGenerator.generateOtp();
+            logger.debug("otp generated:********");
 
-            // if user details along with generated OTP is stored successfully in GREX_USER_OTP table.
-            if(grexUserService.storeDetailsWithOtp(stageName,email,password,otp)){
-                //send OTP over email
-                emailService.sendEmail(from,email,subject,body + otp);
+            boolean isOtpPresent = grexUserService.storeDetailsWithOtp(stageName, email, password, otp);
+            logger.debug("is record present in otp table:" + isOtpPresent);
+
+            if (isOtpPresent) {
+                emailService.sendEmail(from, email, subject, body + otp);
+                logger.debug("signup email sent");
             }
-        }else{
+        } else {
+            logger.error("Email or stage name already exist");
             throw new UserEmailAlreadyExistsException("Email or stage name already exist");
         }
+
+        logger.info("Exited signup method");
 
     }
 
     @PostMapping("/otp")
     public void validateOtp(@RequestBody @NotNull @Valid final EmailOtpDto emailOtpDto) {
 
+        logger.info("entered validateOtp");
+
         final String email = emailOtpDto.getEmail().trim();
         final String entered_otp = emailOtpDto.getOtp().trim();
 
-        //check if email with otp present
+        logger.debug("entered signup email:" + email + ",otp: ********");
+
         boolean isOtpPresent = grexUserService.isOtpPresentByEmail(email);
 
-        if(isOtpPresent){
+        logger.debug("isOtpPresent"+isOtpPresent);
 
-            // get user details with OTP
+        if (isOtpPresent) {
+
             RegisterUserOtpDto otpDto = grexUserService.checkStoredOtp(email);
 
-            // compare entered OTP with generated OTP
-            if(otpDto.getOtp().equalsIgnoreCase(entered_otp)){
-                grexUserService.signUpAfterOtpValidation(otpDto.getEmail(),otpDto.getStageName(),otpDto.getPassword());
-            }else{
-                //do something as otp linked with email is wrong
+            if (otpDto.getOtp().equalsIgnoreCase(entered_otp)) {
+                logger.debug("otp matched");
+                grexUserService.signUpAfterOtpValidation(otpDto.getEmail(), otpDto.getStageName(), otpDto.getPassword());
+                logger.debug("signUpAfterOtpValidation called");
+
+            } else {
+               logger.error("otp mismatch");
             }
-        }else{
-            // do something as email with otp no present.
+        } else {
+             logger.error("otp no present");
         }
+
+        logger.info("exited validateOtp");
+
     }
 
     @PostMapping("/login")
     public ResponseEntity<GenericMessage> authenticate(@RequestBody @NotNull @Valid LoginUserDto loginUserDto) {
 
+        logger.info("entered /login authenticate method");
+
         final String email = loginUserDto.getEmail().trim();
         final String password = loginUserDto.getPassword().trim();
 
-        GrexUser grexUser = grexUserService.login(email,password);
+        logger.debug("entered login email:" + email + ",password: ********");
+
+        GrexUser grexUser = grexUserService.login(email, password);
+
+        logger.debug("authenticated user is present:"+(grexUser!=null));
 
         String jwtToken = jwtTokenService.generateToken(grexUser);
 
@@ -116,8 +147,12 @@ public class GrexUserController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtTokenService.getExpirationTime());
 
-        GenericMessage response = new GenericMessage(HttpStatus.OK,loginResponse);
+        GenericMessage response = new GenericMessage(HttpStatus.OK, loginResponse);
+
+        logger.info("exiting /login authenticate method");
+
         return new ResponseEntity<>(response, HttpStatus.OK);
+
 
     }
 
