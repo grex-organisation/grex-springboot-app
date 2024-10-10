@@ -66,23 +66,23 @@ public class GrexUserController {
         final String email = registerUserDto.getEmail().trim();
         final String password = passwordEncoder.encode(registerUserDto.getPassword().trim());
 
-        logger.debug("entered signup email:" + email + ",stage name:" + stageName + ",password: ********");
+        logger.info("entered signup email:" + email + ",stage name:" + stageName + ",password: ********");
 
         boolean isPresent = grexUserService.checkEmailOrStageNameAlreadyExists(email, stageName);
 
-        logger.debug("email or username already present:" + !isPresent);
+        logger.info("email or username already present:" + !isPresent);
 
         if (!isPresent) {
 
             String otp = OtpGenerator.generateOtp();
-            logger.debug("otp generated:********");
+            logger.info("otp generated:********");
 
             boolean isOtpPresent = grexUserService.storeDetailsWithOtp(stageName, email, password, otp);
-            logger.debug("is record present in otp table:" + isOtpPresent);
+            logger.info("is record present in otp table:" + isOtpPresent);
 
             if (isOtpPresent) {
                 emailService.sendEmail(from, email, subject, body + otp);
-                logger.debug("signup email sent");
+                logger.info("signup email sent");
             }
         } else {
             logger.error("Email or stage name already exist");
@@ -101,20 +101,20 @@ public class GrexUserController {
         final String email = emailOtpDto.getEmail().trim();
         final String entered_otp = emailOtpDto.getOtp().trim();
 
-        logger.debug("entered signup email:" + email + ",otp: ********");
+        logger.info("entered signup email:" + email + ",otp: ********");
 
         boolean isOtpPresent = grexUserService.isOtpPresentByEmail(email);
 
-        logger.debug("isOtpPresent"+isOtpPresent);
+        logger.info("isOtpPresent"+isOtpPresent);
 
         if (isOtpPresent) {
 
             RegisterUserOtpDto otpDto = grexUserService.checkStoredOtp(email);
 
             if (otpDto.getOtp().equalsIgnoreCase(entered_otp)) {
-                logger.debug("otp matched");
+                logger.info("otp matched");
                 grexUserService.signUpAfterOtpValidation(otpDto.getEmail(), otpDto.getStageName(), otpDto.getPassword());
-                logger.debug("signUpAfterOtpValidation called");
+                logger.info("signUpAfterOtpValidation called");
 
             } else {
                logger.error("otp mismatch");
@@ -135,11 +135,11 @@ public class GrexUserController {
         final String email = loginUserDto.getEmail().trim();
         final String password = loginUserDto.getPassword().trim();
 
-        logger.debug("entered login email:" + email + ",password: ********");
+        logger.info("entered login email:" + email + ",password: ********");
 
         GrexUser grexUser = grexUserService.login(email, password);
 
-        logger.debug("authenticated user is present:"+(grexUser!=null));
+        logger.info("authenticated user is present:"+(grexUser!=null));
 
         String jwtToken = jwtTokenService.generateToken(grexUser);
 

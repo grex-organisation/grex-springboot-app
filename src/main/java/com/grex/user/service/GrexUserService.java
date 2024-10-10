@@ -43,13 +43,13 @@ public class GrexUserService {
         logger.info("entered signUpAfterOtpValidation method ");
 
         userRepository.addNewUser(email, stageName, password, "USER", true, false);
-        logger.debug("called addNewUser");
+        logger.info("called addNewUser");
 
         userRepository.deleteOtpRecord(email);
-        logger.debug("called deleteOtpRecord");
+        logger.info("called deleteOtpRecord");
 
         progressRepository.addSignUpProgress(stageName);
-        logger.debug("called addSignUpProgress");
+        logger.info("called addSignUpProgress");
 
         logger.info("exited signUpAfterOtpValidation method ");
 
