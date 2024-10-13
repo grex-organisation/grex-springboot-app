@@ -5,6 +5,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +41,8 @@ public class LocalSystemParameterStoreConfiguration {
     @Value("${google.recaptcha.secret.url}")
     private String googleReCaptchaSecretUrl;
 
+
+    private static final Logger logger = LoggerFactory.getLogger(LocalSystemParameterStoreConfiguration.class);
 
     @Bean
     public DataSource dataSource() {

@@ -1,10 +1,13 @@
 package com.grex.configuration;
 
 
+import com.grex.user.service.GrexUserService;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,6 +56,9 @@ public class AwsSystemParameterStoreConfiguration {
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(AwsSystemParameterStoreConfiguration.class);
+
 
     // make a call using client to get parameter value from SSM
     private String getParameterValue(String parameterName, boolean isSecureString) {
@@ -105,12 +111,12 @@ public class AwsSystemParameterStoreConfiguration {
 
         //google recaptcha
         awsSystemParameterStore.setGoogleRecaptchaSecretKey(getParameterValue(googleReCaptchaSecretKey, false));
-        awsSystemParameterStore.setGoogleRecaptchaSecretKey(getParameterValue(googleReCaptchaSecretUrl, false));
+        awsSystemParameterStore.setGoogleRecaptchaSecretUrl(getParameterValue(googleReCaptchaSecretUrl, false));
 
         //JWT
         awsSystemParameterStore.setSecretKey(getParameterValue(jwtKeyParamName, false));
         awsSystemParameterStore.setJwtExpiration(Long.parseLong(getParameterValue(jwtExpiryParamName, false)));
-
+        
         return awsSystemParameterStore;
     }
 
