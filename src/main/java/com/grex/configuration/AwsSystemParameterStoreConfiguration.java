@@ -1,7 +1,6 @@
 package com.grex.configuration;
 
 
-import com.grex.security.JWT;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.ssm.SsmClient;
@@ -38,6 +38,12 @@ public class AwsSystemParameterStoreConfiguration {
 
     @Value("${aws.ssm.jwt.secret.expiry}")
     private String jwtExpiryParamName;
+
+    @Value("${google.recaptcha.secret.key}")
+    private String googleReCaptchaSecretKey;
+
+    @Value("${google.recaptcha.secret.url}")
+    private String googleReCaptchaSecretUrl;
 
 
     // setup client in constructor
@@ -86,13 +92,29 @@ public class AwsSystemParameterStoreConfiguration {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
+
     @Bean
-    public JWT jwt(){
-        JWT jwt = new JWT();
-        jwt.setSecretKey(getParameterValue(jwtKeyParamName, false));
-        jwt.setJwtExpiration(Long.parseLong(getParameterValue(jwtExpiryParamName, false)));
-        return jwt;
-   }
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    public AwsSystemParameterStore awsSystemParameterStore() {
+
+        AwsSystemParameterStore awsSystemParameterStore = new AwsSystemParameterStore();
+
+        //google recaptcha
+        awsSystemParameterStore.setGoogleRecaptchaSecretKey(getParameterValue(googleReCaptchaSecretKey, false));
+        awsSystemParameterStore.setGoogleRecaptchaSecretKey(getParameterValue(googleReCaptchaSecretUrl, false));
+
+        //JWT
+        awsSystemParameterStore.setSecretKey(getParameterValue(jwtKeyParamName, false));
+        awsSystemParameterStore.setJwtExpiration(Long.parseLong(getParameterValue(jwtExpiryParamName, false)));
+
+        return awsSystemParameterStore;
+    }
+
+
 
 
 }

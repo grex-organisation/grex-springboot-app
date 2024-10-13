@@ -1,11 +1,9 @@
 package com.grex.user.controller;
 
-import com.grex.common.exception.types.UserEmailAlreadyExistsException;
 import com.grex.common.messages.GenericMessage;
 import com.grex.common.model.*;
 import com.grex.common.util.OtpGenerator;
 import com.grex.email.service.EmailService;
-import com.grex.progress.service.ProgressService;
 import com.grex.security.JwtTokenService;
 import com.grex.user.model.GrexUser;
 import com.grex.user.service.GrexUserService;
@@ -17,17 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/grex/auth")
 public class GrexUserController {
 
-    private static final Logger logger = LoggerFactory.getLogger(GrexUserController.class);
 
     private final JwtTokenService jwtTokenService;
     private final PasswordEncoder passwordEncoder;
@@ -51,6 +45,8 @@ public class GrexUserController {
         this.emailService = emailService;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(GrexUserController.class);
+
     @PostMapping("/signup")
     public ResponseEntity<GenericMessage> signUp(@RequestBody @NotNull @Valid final RegisterUserDto registerUserDto) {
 
@@ -59,6 +55,15 @@ public class GrexUserController {
         String stageName = registerUserDto.getUserName().trim();
         String email = registerUserDto.getEmail().trim();
         String password = passwordEncoder.encode(registerUserDto.getPassword().trim());
+
+        boolean isGoogleReCaptchaTokenValid = grexUserService.verifyGoogleRecaptcha(registerUserDto.getRecaptchaToken());
+
+        logger.info("is ReCaptcha Token valid: {}", isGoogleReCaptchaTokenValid);
+
+        if (!isGoogleReCaptchaTokenValid) {
+            return new ResponseEntity<>(new GenericMessage(HttpStatus.BAD_REQUEST, "Invalid ReCaptcha Token."), HttpStatus.BAD_REQUEST);
+        }
+
 
         // Check if email or stage name already exists
         if (grexUserService.checkEmailOrStageNameAlreadyExists(email, stageName)) {
@@ -140,15 +145,4 @@ public class GrexUserController {
         return new ResponseEntity<>(new GenericMessage(HttpStatus.OK, loginResponse), HttpStatus.OK);
     }
 
-  /*  @ExceptionHandler(UserEmailAlreadyExistsException.class)
-    public ResponseEntity<GenericMessage> handleEmailExistsException(UserEmailAlreadyExistsException ex) {
-        return new ResponseEntity<>(new GenericMessage(HttpStatus.CONFLICT, ex.getMessage()), HttpStatus.CONFLICT);
-    }
-
-    // Global error handling for any other exceptions
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<GenericMessage> handleAllExceptions(Exception ex) {
-        logger.error("An unexpected error occurred", ex);
-        return new ResponseEntity<>(new GenericMessage(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred. Please try again later."), HttpStatus.INTERNAL_SERVER_ERROR);
-    }*/
 }

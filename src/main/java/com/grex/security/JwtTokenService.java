@@ -1,12 +1,12 @@
 package com.grex.security;
 
+import com.grex.configuration.AwsSystemParameterStore;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +18,13 @@ import java.util.function.Function;
 
 @Service
 public class JwtTokenService {
-    //@Value("${security.jwt.secret-key}")
-   // private String secretKey;
 
-   // @Value("${security.jwt.expiration-time}")
-   // private long jwtExpiration;
+    private final AwsSystemParameterStore awsSystemParameterStore;
 
     @Autowired
-    private JWT jwt;
+    public JwtTokenService(AwsSystemParameterStore awsSystemParameterStore) {
+        this.awsSystemParameterStore = awsSystemParameterStore;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -41,11 +40,11 @@ public class JwtTokenService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwt.getJwtExpiration());
+        return buildToken(extraClaims, userDetails, awsSystemParameterStore.getJwtExpiration());
     }
 
     public long getExpirationTime() {
-        return jwt.getJwtExpiration();
+        return awsSystemParameterStore.getJwtExpiration();
     }
 
     private String buildToken(
@@ -86,7 +85,7 @@ public class JwtTokenService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwt.getSecretKey());
+        byte[] keyBytes = Decoders.BASE64.decode(awsSystemParameterStore.getSecretKey());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

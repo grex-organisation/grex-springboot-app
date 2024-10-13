@@ -1,7 +1,6 @@
 package com.grex.configuration;
 
 
-import com.grex.security.JWT;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -10,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestTemplate;
+
 import javax.sql.DataSource;
 
 
@@ -31,6 +32,12 @@ public class LocalSystemParameterStoreConfiguration {
 
     @Value("${aws.ssm.jwt.secret.expiry}")
     private String jwtExpiryParamName;
+
+    @Value("${google.recaptcha.secret.key}")
+    private String googleReCaptchaSecretKey;
+
+    @Value("${google.recaptcha.secret.url}")
+    private String googleReCaptchaSecretUrl;
 
 
     @Bean
@@ -57,13 +64,24 @@ public class LocalSystemParameterStoreConfiguration {
     }
 
     @Bean
-    public JWT jwt(){
-        JWT jwt = new JWT();
-        jwt.setSecretKey(jwtKeyParamName);
-        jwt.setJwtExpiration(Long.parseLong(jwtExpiryParamName));
-        return jwt;
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
+    @Bean
+    public AwsSystemParameterStore awsSystemParameterStore() {
 
+        AwsSystemParameterStore awsSystemParameterStore = new AwsSystemParameterStore();
+
+        //google recaptcha
+        awsSystemParameterStore.setGoogleRecaptchaSecretKey(googleReCaptchaSecretKey);
+        awsSystemParameterStore.setGoogleRecaptchaSecretKey(googleReCaptchaSecretUrl);
+
+        //JWT
+        awsSystemParameterStore.setSecretKey(jwtKeyParamName);
+        awsSystemParameterStore.setJwtExpiration(Long.parseLong(jwtExpiryParamName));
+
+        return awsSystemParameterStore;
+    }
 }
 
