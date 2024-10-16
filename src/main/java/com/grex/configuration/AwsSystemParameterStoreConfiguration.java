@@ -1,7 +1,6 @@
 package com.grex.configuration;
 
 
-import com.grex.user.service.GrexUserService;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -116,7 +115,7 @@ public class AwsSystemParameterStoreConfiguration {
         //JWT
         awsSystemParameterStore.setSecretKey(getParameterValue(jwtKeyParamName, false));
         awsSystemParameterStore.setJwtExpiration(Long.parseLong(getParameterValue(jwtExpiryParamName, false)));
-        
+
         return awsSystemParameterStore;
     }
 

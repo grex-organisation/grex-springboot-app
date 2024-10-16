@@ -79,7 +79,7 @@ public class LocalSystemParameterStoreConfiguration {
 
         //google recaptcha
         awsSystemParameterStore.setGoogleRecaptchaSecretKey(googleReCaptchaSecretKey);
-        awsSystemParameterStore.setGoogleRecaptchaSecretKey(googleReCaptchaSecretUrl);
+        awsSystemParameterStore.setGoogleRecaptchaSecretUrl(googleReCaptchaSecretUrl);
 
         //JWT
         awsSystemParameterStore.setSecretKey(jwtKeyParamName);
