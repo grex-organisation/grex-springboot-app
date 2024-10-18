@@ -1,5 +1,6 @@
-package com.grex.model;
+package com.grex.dto;
 
+import com.grex.model.Word;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Group {
+public class GroupDto {
 
     private String groupId;
     private String groupName;
-    private List<Word> words;
 }

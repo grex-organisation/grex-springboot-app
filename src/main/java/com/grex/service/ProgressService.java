@@ -19,12 +19,12 @@ public class ProgressService {
         return progressRepository.findGroupsProgressByStageName(username);
     }
 
-    public int findSpecificGroupProgressByStageName(final String stageName, final String groupId) {
+    public byte findSpecificGroupProgressByStageName(final String stageName, final String groupId) {
         return  progressRepository.findSpecificGroupProgressByStageName(stageName,groupId);
     }
 
-    public int updateGroupStatus(final String stageName, final String groupId){
-      return progressRepository.updateGroupStatus(stageName,groupId);
+    public void updateGroupStatus(final String stageName, final String groupId){
+       progressRepository.updateGroupStatus(stageName,groupId);
     }
 
 }

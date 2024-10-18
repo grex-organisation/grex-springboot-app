@@ -1,19 +1,17 @@
-package com.grex.model;
+package com.grex.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
-public class Group {
+@NoArgsConstructor
+public class ProgressDto {
 
     private String groupId;
-    private String groupName;
-    private List<Word> words;
+    private byte currentStatus;
 }

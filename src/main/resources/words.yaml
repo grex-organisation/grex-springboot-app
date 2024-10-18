@@ -1,22 +1,57 @@
 groups:
   groups:
     - groupId: "g1"
+      groupName: "Group 1"
       words:
         - wordId: "g1w1"
-          word: "example"
-          meaning: "a representative form or pattern"
+          word: "Abate"
+          meaning: "to reduce in amount, degree, or severity."
           synonyms:
-            - "sample"
-            - "specimen"
+            - "diminish"
+            - "decrease"
           examples:
-            - "This is an example sentence."
+            - "The storm finally abated."
+        - wordId: "g1w2"
+          word: "Aberration"
+          meaning: "a departure from what is normal, usual, or expected."
+          synonyms:
+            - "deviation"
+            - "anomaly"
+          examples:
+            - "The investigation revealed an aberration in the data."
+        - wordId: "g1w3"
+          word: "Abstain"
+          meaning: "to restrain oneself from doing or enjoying something."
+          synonyms:
+            - "refrain"
+            - "withhold"
+          examples:
+            - "She decided to abstain from drinking alcohol."
+
     - groupId: "g2"
+      groupName: "Group 2"
       words:
         - wordId: "g2w1"
-          word: "apple"
-          meaning: "a round fruit with red or green skin"
+          word: "Alacrity"
+          meaning: "brisk and cheerful readiness."
           synonyms:
-            - "fruit"
-            - "pome"
+            - "eagerness"
+            - "willingness"
           examples:
-            - "She ate an apple."
+            - "She accepted the invitation with alacrity."
+        - wordId: "g2w2"
+          word: "Ambiguous"
+          meaning: "open to more than one interpretation; not having one obvious meaning."
+          synonyms:
+            - "unclear"
+            - "vague"
+          examples:
+            - "The ambiguous statement led to confusion."
+        - wordId: "g2w3"
+          word: "Abridge"
+          meaning: "to shorten a book, movie, speech, or other text without losing the sense."
+          synonyms:
+            - "shorten"
+            - "truncate"
+          examples:
+            - "The abridged version of the novel was more accessible."

@@ -14,9 +14,6 @@
 	<name>grex-app</name>
 	<description>GREX Application</description>
 
-	<properties>
-		<java.version>11</java.version>
-	</properties>
 
 	<distributionManagement>
 		<repository>
@@ -36,12 +33,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 
@@ -108,6 +99,67 @@
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>ssm</artifactId>
 			<version>2.20.16</version> <!-- Use the latest version -->
+		</dependency>
+
+		<!-- test dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<!-- Exclude the JUnit 4 dependencies, as we are using JUnit 5 -->
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Mockito Core for mocking objects -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Mockito JUnit Jupiter for integration with JUnit 5 -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>5.4.0</version> <!-- Check the latest stable version -->
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JUnit 5 (JUnit Jupiter) API and Engine -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Optional: AssertJ for fluent assertions -->
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.24.0</version> <!-- Check for the latest version -->
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Optional: Hamcrest for more matchers -->
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest</artifactId>
+			<version>2.2</version>
+			<scope>test</scope>
 		</dependency>
 
 
