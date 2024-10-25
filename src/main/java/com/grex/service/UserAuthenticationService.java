@@ -4,6 +4,7 @@ package com.grex.service;
 import com.grex.persistence.OtpRepository;
 import com.grex.persistence.ProgressRepository;
 import com.grex.model.User;
+import com.grex.persistence.ScoreRepository;
 import com.grex.persistence.UserAuthenticationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +25,17 @@ public class UserAuthenticationService {
 
     private final ProgressRepository progressRepository;
 
+    private final ScoreRepository scoreRepository;
+
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public UserAuthenticationService(UserAuthenticationRepository userRepository, ProgressRepository progressRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, OtpRepository otpRepository) {
+    public UserAuthenticationService(UserAuthenticationRepository userRepository, ProgressRepository progressRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, OtpRepository otpRepository, ScoreRepository scoreRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.progressRepository = progressRepository;
         this.otpRepository = otpRepository;
+        this.scoreRepository = scoreRepository;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(UserAuthenticationService.class);
@@ -49,6 +53,8 @@ public class UserAuthenticationService {
         userRepository.addNewUser(email, stageName, password, "USER", true, false);
         otpRepository.deleteOtpRecord(email);
         progressRepository.makeFirstEntryInProgress(stageName);
+        scoreRepository.makeFirstEntryInScore(stageName,"US");
+
     }
 
     public User login(final String email, final String password) {

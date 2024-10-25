@@ -28,6 +28,8 @@ public class User implements UserDetails {
 
     private boolean isBot;
 
+    private short countryCode;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
