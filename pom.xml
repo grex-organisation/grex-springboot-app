@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.grex</groupId>
 	<artifactId>grex-springboot-app</artifactId>
-	<version>24.9.0-SNAPSHOT</version>
+	<version>24.11.0-SNAPSHOT</version>
 	<name>grex-app</name>
 	<description>GREX Application</description>
 
