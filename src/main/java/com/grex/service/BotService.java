@@ -1,6 +1,5 @@
 package com.grex.service;
 
-import com.grex.model.Progress;
 import com.grex.model.User;
 import com.grex.persistence.BotRepository;
 import org.slf4j.Logger;
@@ -27,25 +26,24 @@ public class BotService {
 
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
 
-    //@Scheduled(fixedRate = 60000)  // every minute
-   /* @Transactional
+    @Scheduled(fixedRate = 120000)  // every 2 minutes
+    @Transactional
     public void runBot() {
 
         logger.info("starting bots");
 
         // get a random bot user from grex_user table
-        final String  bot_stage_name =  botRepository.getRandomBotUser().getStageName().trim();
+        final User  bot_user =  botRepository.getRandomBotUser();
 
-        //load progress from table and put in cache
-        Progress progress = progressService.findAllGroupProgressByStageName(bot_stage_name);
-        cacheService.getProgressMap().put(bot_stage_name,progress);
+        if(bot_user == null){return;}
 
-       //update random column by 1 for random bot
-        //cacheService.setCachedProgressByGroup(bot_stage_name,getRandomGroupColumn());
+        final String bot_stage_name = bot_user.getStageName().trim();
 
+        //load progress from cache and update in cache
+        progressService.updateGroupStatus(bot_stage_name,getRandomGroupColumn(),progressService.findAllGroupProgressByStageName(bot_stage_name));
         logger.info("exit bots");
 
-    }*/
+    }
 
     private String getRandomGroupColumn() {
         Random random = new Random();
