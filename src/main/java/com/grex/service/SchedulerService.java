@@ -18,17 +18,15 @@ public class SchedulerService {
 
     private final SchedulerRepository schedulerRepository;
 
-    private final CacheService cacheService;
 
     private static final Logger logger = LoggerFactory.getLogger(SchedulerService.class);
 
-    public SchedulerService(SchedulerRepository schedulerRepository, CacheService cacheService) {
+    public SchedulerService(SchedulerRepository schedulerRepository) {
         this.schedulerRepository = schedulerRepository;
-        this.cacheService = cacheService;
     }
 
-    @Scheduled(fixedRate = 120000)  // keep 3600000 every 1 hour for live and 120000 for dev
-    @Transactional
+   // @Scheduled(fixedRate = 120000)  // keep 3600000 every 1 hour for live and 120000 for dev
+   /* @Transactional
     public void updateRanksScheduler() {
 
         logger.info("starting scheduler");
@@ -45,7 +43,7 @@ public class SchedulerService {
 
         logger.info("exit scheduler");
 
-    }
+    }*/
 
 }
 

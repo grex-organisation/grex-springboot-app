@@ -16,21 +16,19 @@ import java.util.Random;
 public class BotService {
 
     private final BotRepository botRepository;
-    private final CacheService cacheService;
 
     private final ProgressService progressService;
 
     @Autowired
-    public BotService(BotRepository botRepository, CacheService cacheService, ProgressService progressService) {
+    public BotService(BotRepository botRepository, ProgressService progressService) {
         this.botRepository = botRepository;
-        this.cacheService = cacheService;
         this.progressService = progressService;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
 
-    @Scheduled(fixedRate = 60000)  // every minute
-    @Transactional
+    //@Scheduled(fixedRate = 60000)  // every minute
+   /* @Transactional
     public void runBot() {
 
         logger.info("starting bots");
@@ -43,11 +41,11 @@ public class BotService {
         cacheService.getProgressMap().put(bot_stage_name,progress);
 
        //update random column by 1 for random bot
-        cacheService.setCachedProgressByGroup(bot_stage_name,getRandomGroupColumn());
+        //cacheService.setCachedProgressByGroup(bot_stage_name,getRandomGroupColumn());
 
         logger.info("exit bots");
 
-    }
+    }*/
 
     private String getRandomGroupColumn() {
         Random random = new Random();

@@ -3,8 +3,6 @@ package com.grex.controller;
 import com.grex.dto.GenericMessage;
 import com.grex.model.Rank;
 import com.grex.model.User;
-import com.grex.persistence.RankRepository;
-import com.grex.service.CacheService;
 import com.grex.service.RankService;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;

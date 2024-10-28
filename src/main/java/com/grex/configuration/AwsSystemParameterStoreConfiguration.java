@@ -26,6 +26,9 @@ public class AwsSystemParameterStoreConfiguration {
 
     private final SsmClient ssmClient;
 
+    @Value("${aws.ses.region}")
+    private String region;
+
     @Value("${aws.ssm.db.url}")
     private String dbUrlParamName;
 
@@ -47,16 +50,16 @@ public class AwsSystemParameterStoreConfiguration {
     @Value("${google.recaptcha.secret.url}")
     private String googleReCaptchaSecretUrl;
 
+    private static final Logger logger = LoggerFactory.getLogger(AwsSystemParameterStoreConfiguration.class);
+
 
     // setup client in constructor
     public AwsSystemParameterStoreConfiguration() {
         this.ssmClient = SsmClient.builder()
-                .region(Region.of("ap-south-1")) // Set your AWS region
+                .region(Region.of(region)) // Set your AWS region
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(AwsSystemParameterStoreConfiguration.class);
 
 
     // make a call using client to get parameter value from SSM
