@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -32,24 +33,14 @@ public class RankController {
     private static final Logger logger = LoggerFactory.getLogger(RankController.class);
 
     @GetMapping("/ranking")
-    public ResponseEntity<GenericMessage> getRank(@AuthenticationPrincipal @NotNull final User currentUser) {
+    public ResponseEntity<GenericMessage> getRank(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "200") int pageSize) {
 
         logger.info("entered in getRank");
 
-        final String stageName = currentUser.getStageName().trim();
-
-        List<Rank> userRank = rankService.getCachedRank(stageName);
-        List<Rank> top = rankService.getCachedTopRanks();
-        List<Rank> last = rankService.getCachedBottomRanks();
-
-        List<Rank> rankList = new ArrayList<>();
-
-        rankList.addAll(top);
-        rankList.addAll(userRank);
-        rankList.addAll(last);
+        List<Rank> ranks = rankService.getCachedRank(page, pageSize);
 
         // Create and return a response
-        return new ResponseEntity<>(new GenericMessage(HttpStatus.OK, rankList), HttpStatus.OK);
+        return new ResponseEntity<>(new GenericMessage(HttpStatus.OK, ranks), HttpStatus.OK);
     }
 }
 

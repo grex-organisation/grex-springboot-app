@@ -20,20 +20,9 @@ public class RankService {
         this.rankRepository = rankRepository;
     }
 
-    @Cacheable(value = "rankCache", key = "'topRanks'", unless = "#result == null || #result.isEmpty()")
-    public List<Rank> getCachedTopRanks() {
-        logger.info("Entering getCachedTopRanks");
-        return rankRepository.findFirstTopTenRank();
-    }
-
-    @Cacheable(value = "rankCache", key = "'bottomRanks'", unless = "#result == null || #result.isEmpty()")
-    public List<Rank> getCachedBottomRanks() {
-        logger.info("Entering getCachedBottomRanks");
-        return rankRepository.findLastTopTenRank();
-    }
-
-    public List<Rank> getCachedRank(String stageName) {
-        return rankRepository.findUserRank(stageName);
-
+    @Cacheable(value = "rankCache", key = "#page + '-' + #pageSize", unless = "#result == null || #result.isEmpty()")
+    public List<Rank> getCachedRank(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return rankRepository.findUserRank(pageSize, offset);
     }
 }
