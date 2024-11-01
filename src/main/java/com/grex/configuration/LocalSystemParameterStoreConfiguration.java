@@ -53,7 +53,7 @@ public class LocalSystemParameterStoreConfiguration {
     private String redisHost;
 
     @Value("${redis.port}")
-    private int redisPort;
+    private String redisPort;
 
 
     @Bean
@@ -102,7 +102,7 @@ public class LocalSystemParameterStoreConfiguration {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, redisPort);
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, Integer.parseInt(redisPort));
         return new LettuceConnectionFactory(configuration);
     }
 
