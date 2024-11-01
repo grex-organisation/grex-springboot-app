@@ -56,7 +56,7 @@ public class ProgressService {
 
     // Caching the action of dumping cache data to the database
     @CacheEvict(value = "progressCache", allEntries = true)
-    @Scheduled(fixedRate = 100000)  // Run every 15 minutes as an example
+    @Scheduled(fixedRate = 15 * 60 * 1000)  // Run every 15 minutes as an example
     public void dumpCacheToDatabase() {
 
         logger.info("@CacheEvict dumpCacheToDatabase started");

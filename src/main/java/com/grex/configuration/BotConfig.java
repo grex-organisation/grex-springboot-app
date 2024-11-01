@@ -8,12 +8,12 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-@Data
-@Configuration
-@ConfigurationProperties(prefix = "bots")
+//@Data
+//@Configuration
+//@ConfigurationProperties(prefix = "bots")
 public class BotConfig {
 
-    private List<BotDto> bots;
+    //private List<BotDto> bots;
 
 }
 
