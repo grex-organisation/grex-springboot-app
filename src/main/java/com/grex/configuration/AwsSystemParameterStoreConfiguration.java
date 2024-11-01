@@ -64,10 +64,6 @@ public class AwsSystemParameterStoreConfiguration {
     @Value("${redis.host}")
     private String redisHost;
 
-    @Value("${redis.port}")
-    private String redisPort;
-
-
     private static final Logger logger = LoggerFactory.getLogger(AwsSystemParameterStoreConfiguration.class);
 
 
@@ -146,7 +142,7 @@ public class AwsSystemParameterStoreConfiguration {
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, Integer.parseInt(redisPort));
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost,6379);
         return new LettuceConnectionFactory(configuration);
     }
 
