@@ -1,8 +1,8 @@
 package com.grex.service;
 
-import com.grex.model.Group;
 import com.grex.model.Progress;
 import com.grex.persistence.ProgressRepository;
+import com.grex.persistence.SchedulerRepository;
 import com.grex.util.ProgressColumnUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,20 +16,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Service
 public class ProgressService {
 
     private final ProgressRepository progressRepository;
+    private final SchedulerRepository schedulerRepository;
 
     @Autowired
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    public ProgressService(ProgressRepository progressRepository, RedisTemplate<String, Object> redisTemplate) {
+    public ProgressService(ProgressRepository progressRepository, SchedulerRepository schedulerRepository, RedisTemplate<String, Object> redisTemplate) {
         this.progressRepository = progressRepository;
+        this.schedulerRepository = schedulerRepository;
         this.redisTemplate = redisTemplate;
     }
 
@@ -76,6 +77,9 @@ public class ProgressService {
         // Perform bulk update
         try {
             progressRepository.batchUpdateProgress(cacheProgressList);
+            schedulerRepository.updateLearnScore();
+            schedulerRepository.updateRanks();
+
             logger.info("Bulk update to GREX_PROGRESS table completed");
 
         } catch (Exception e) {

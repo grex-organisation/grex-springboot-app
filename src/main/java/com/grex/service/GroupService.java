@@ -36,7 +36,7 @@ public class GroupService {
             //put individual group in redis
             for (Group group : wordConfig.getGroups()) {
                 redisTemplate.opsForValue().set("wordConfig:" + group.getGroupId(), new GroupDto(group.getGroupId(), group.getGroupName()));
-                redisTemplate.opsForValue().set("flashcard:"+group.getGroupId(), new FlashCardDto(group.getGroupId(), group.getWords()));
+                //redisTemplate.opsForValue().set("flashcard:"+group.getGroupId(), new FlashCardDto(group.getGroupId(), group.getWords()));
             }
 
             wordConfig.setGroups(null); //free memory
