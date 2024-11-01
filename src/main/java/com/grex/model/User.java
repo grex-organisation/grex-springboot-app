@@ -28,7 +28,7 @@ public class User implements UserDetails {
 
     private boolean isBot;
 
-    private short countryCode;
+    //private String countryCode;
 
 
     @Override

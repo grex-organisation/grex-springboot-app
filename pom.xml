@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.grex</groupId>
 	<artifactId>grex-springboot-app</artifactId>
-	<version>24.9.0-SNAPSHOT</version>
+	<version>24.11.0-SNAPSHOT</version>
 	<name>grex-app</name>
 	<description>GREX Application</description>
 
@@ -89,17 +89,30 @@
 			<version>0.11.5</version>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
 			<version>1.12.765</version>
-		</dependency>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>-->
 
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>ssm</artifactId>
 			<version>2.20.16</version> <!-- Use the latest version -->
 		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-ses</artifactId>
+			<version>1.12.765</version> <!-- replace with the latest version -->
+		</dependency>
+
 
 		<!-- test dependencies -->
 		<dependency>
@@ -162,6 +175,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Spring Data Redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 
 	</dependencies>
 

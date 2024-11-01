@@ -11,6 +11,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.client.RestTemplate;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -19,12 +28,16 @@ import software.amazon.awssdk.services.ssm.model.GetParameterRequest;
 import software.amazon.awssdk.services.ssm.model.GetParameterResponse;
 
 import javax.sql.DataSource;
+import java.time.Duration;
 
 @Configuration
 @Profile("live")
 public class AwsSystemParameterStoreConfiguration {
 
     private final SsmClient ssmClient;
+
+    @Value("${aws.ses.region}")
+    private String region;
 
     @Value("${aws.ssm.db.url}")
     private String dbUrlParamName;
@@ -47,16 +60,23 @@ public class AwsSystemParameterStoreConfiguration {
     @Value("${google.recaptcha.secret.url}")
     private String googleReCaptchaSecretUrl;
 
+    @Value("${redis.host}")
+    private String redisHost;
+
+    @Value("${redis.port}")
+    private int redisPort;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(AwsSystemParameterStoreConfiguration.class);
+
 
     // setup client in constructor
     public AwsSystemParameterStoreConfiguration() {
         this.ssmClient = SsmClient.builder()
-                .region(Region.of("ap-south-1")) // Set your AWS region
+                .region(Region.of(region)) // Set your AWS region
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(AwsSystemParameterStoreConfiguration.class);
 
 
     // make a call using client to get parameter value from SSM
@@ -117,6 +137,47 @@ public class AwsSystemParameterStoreConfiguration {
         awsSystemParameterStore.setJwtExpiration(Long.parseLong(getParameterValue(jwtExpiryParamName, false)));
 
         return awsSystemParameterStore;
+    }
+
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost, redisPort);
+        return new LettuceConnectionFactory(configuration);
+    }
+
+
+    @Bean
+    public RedisCacheManager cacheManager() {
+
+        RedisCacheConfiguration cacheConfig = myDefaultCacheConfig(Duration.ofMinutes(10)).disableCachingNullValues();
+
+        return RedisCacheManager.builder(redisConnectionFactory())
+                .cacheDefaults(cacheConfig)
+                .withCacheConfiguration("rankCache", myDefaultCacheConfig(Duration.ofMinutes(15)))
+                .withCacheConfiguration("progressCache", myDefaultCacheConfig(Duration.ofMinutes(15)))
+                .build();
+    }
+
+    public RedisCacheConfiguration myDefaultCacheConfig(Duration duration) {
+        return RedisCacheConfiguration
+                .defaultCacheConfig()
+                .entryTtl(duration)
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        // Use StringRedisSerializer for keys and GenericJackson2JsonRedisSerializer for values
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        template.afterPropertiesSet();
+        return template;
     }
 
 
