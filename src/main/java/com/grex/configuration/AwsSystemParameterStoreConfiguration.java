@@ -137,12 +137,13 @@ public class AwsSystemParameterStoreConfiguration {
         awsSystemParameterStore.setSecretKey(getParameterValue(jwtKeyParamName, false));
         awsSystemParameterStore.setJwtExpiration(Long.parseLong(getParameterValue(jwtExpiryParamName, false)));
 
+
         return awsSystemParameterStore;
     }
 
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisHost,6379);
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(getParameterValue(redisHost, false),6379);
         return new LettuceConnectionFactory(configuration);
     }
 
