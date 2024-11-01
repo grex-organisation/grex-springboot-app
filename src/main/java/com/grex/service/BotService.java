@@ -19,28 +19,27 @@ public class BotService {
 
     private final BotRepository botRepository;
 
-    private boolean flag = true;
+  //  private boolean flag = true;
 
-    private final BotConfig botConfig;
+//    private final BotConfig botConfig;
 
     private final ProgressService progressService;
 
     @Autowired
-    public BotService(BotRepository botRepository, BotConfig botConfig, ProgressService progressService) {
+    public BotService(BotRepository botRepository, ProgressService progressService) {
         this.botRepository = botRepository;
-        this.botConfig = botConfig;
         this.progressService = progressService;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
 
-    @Scheduled(fixedRate = 120000)  // every 2 minutes
+    @Scheduled(fixedRate = 15 * 60 * 1000)  // 15 mins
     @Transactional
     public void runBot() {
 
         logger.info("starting bots");
 
-        if(flag) {
+        /*if(flag) {
 
             logger.info("inserting bot data");
 
@@ -68,7 +67,7 @@ public class BotService {
             flag = !flag;
             logger.info("inserted bot data");
 
-        }
+        }*/
 
         // get a random bot user from grex_user table
         final User  bot_user =  botRepository.getRandomBotUser();
