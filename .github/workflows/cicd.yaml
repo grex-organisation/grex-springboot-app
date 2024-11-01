@@ -107,8 +107,10 @@ jobs:
         run: |
           ssh -t -o StrictHostKeyChecking=no -i /tmp/aws_ec2_key.pem ec2-user@${{ secrets.EC2_HOST_IP }} << 'EOF'
             echo ${{ secrets.ORG_CICD_TOKEN }} | docker login ${{ env.REGISTRY_URL }} -u ${{ github.actor }} --password-stdin
+            docker stop $(docker ps -q)      # Stops all running containers
+            docker rm $(docker ps -aq)       # Removes all containers (stopped or running)
+            sudo docker rmi - f ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
             sudo docker pull ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
-            sudo docker stop ${{ env.APP_NAME }} || true
-            sudo docker rm ${{ env.APP_NAME }} || true
-            sudo docker run -d --name ${{ env.APP_NAME }} -p 8080:8080 ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
+            sudo docker pull redis:latest
+            sudo docker run -d --name redis --network grex-network -p 6379:6379 --restart always redis:latest redis-server --maxmemory 20mb --maxmemory-policy allkeys-lru && docker run -d  --name ${{ env.APP_NAME }} -p 8080:8080 --network grex-network --restart always -e SPRING_PROFILES_ACTIVE=live --health-cmd="curl -f http://localhost:8080/actuator/health" --health-interval=30s --health-timeout=30s --health-retries=5  ${{ env.REGISTRY_URL }}/${{ env.DOCKER_REPO }}/${{ env.APP_NAME }}-${{env.DOCKER_IMAGE_SUFFIX}}:latest
           EOF
