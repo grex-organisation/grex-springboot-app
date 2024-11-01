@@ -19,16 +19,15 @@ public class BotService {
 
     private final BotRepository botRepository;
 
-    private boolean flag = true;
+  //  private boolean flag = true;
 
-    private final BotConfig botConfig;
+//    private final BotConfig botConfig;
 
     private final ProgressService progressService;
 
     @Autowired
-    public BotService(BotRepository botRepository, BotConfig botConfig, ProgressService progressService) {
+    public BotService(BotRepository botRepository, ProgressService progressService) {
         this.botRepository = botRepository;
-        this.botConfig = botConfig;
         this.progressService = progressService;
     }
 
