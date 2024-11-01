@@ -2,6 +2,7 @@ package com.grex.configuration;
 
 
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.annotation.PostConstruct;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -34,7 +35,7 @@ import java.time.Duration;
 @Profile("live")
 public class AwsSystemParameterStoreConfiguration {
 
-    private final SsmClient ssmClient;
+    private SsmClient ssmClient;
 
     @Value("${aws.ses.region}")
     private String region;
@@ -71,12 +72,16 @@ public class AwsSystemParameterStoreConfiguration {
 
 
     // setup client in constructor
-    public AwsSystemParameterStoreConfiguration() {
+    public AwsSystemParameterStoreConfiguration() {}
+
+    @PostConstruct
+    private void initializeSsmClient() {
         this.ssmClient = SsmClient.builder()
-                .region(Region.of(region)) // Set your AWS region
+                .region(Region.of(region))
                 .credentialsProvider(DefaultCredentialsProvider.create())
                 .build();
     }
+
 
 
     // make a call using client to get parameter value from SSM
@@ -179,9 +184,5 @@ public class AwsSystemParameterStoreConfiguration {
         template.afterPropertiesSet();
         return template;
     }
-
-
-
-
 }
 

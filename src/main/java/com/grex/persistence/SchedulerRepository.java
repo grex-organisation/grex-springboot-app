@@ -24,6 +24,7 @@ public interface SchedulerRepository {
             ON CONFLICT (user_stage_name) 
             DO UPDATE SET 
                 rank = EXCLUDED.rank,
+                user_country = EXCLUDED.user_country,
                 learn_score = EXCLUDED.learn_score,
                 test_score = EXCLUDED.test_score,
                 challenge_score = EXCLUDED.challenge_score,
