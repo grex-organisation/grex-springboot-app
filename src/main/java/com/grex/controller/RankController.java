@@ -32,7 +32,7 @@ public class RankController {
 
     private static final Logger logger = LoggerFactory.getLogger(RankController.class);
 
-    @GetMapping("/ranking")
+    @GetMapping("/cdn/ranking")
     public ResponseEntity<GenericMessage> getRank(@RequestParam(defaultValue = "1") int page) {
 
         logger.info("entered in getRank");
@@ -40,11 +40,7 @@ public class RankController {
 
         List<Rank> ranks = rankService.getCachedRank(page, pageSize);
 
-        // Set cache headers for AWS cloudFront caching
-        HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(CacheControl.maxAge(15, TimeUnit.MINUTES));
-
-        return new ResponseEntity<>(new GenericMessage(HttpStatus.OK, ranks), headers, HttpStatus.OK);
+        return new ResponseEntity<>(new GenericMessage(HttpStatus.OK, ranks), HttpStatus.OK);
 
     }
 }

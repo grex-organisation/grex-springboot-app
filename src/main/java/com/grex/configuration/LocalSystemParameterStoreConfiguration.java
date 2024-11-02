@@ -55,6 +55,12 @@ public class LocalSystemParameterStoreConfiguration {
     @Value("${redis.port}")
     private String redisPort;
 
+    @Value("${cdn.secret.header}")
+    private String cdnSecretHeader;
+
+    @Value("${cdn.secret.key}")
+    private String cdnSecretKey;
+
 
     @Bean
     public DataSource dataSource() {
@@ -96,6 +102,10 @@ public class LocalSystemParameterStoreConfiguration {
         //JWT
         awsSystemParameterStore.setSecretKey(jwtKeyParamName);
         awsSystemParameterStore.setJwtExpiration(Long.parseLong(jwtExpiryParamName));
+
+        //CDN bunny.net secret key
+        awsSystemParameterStore.setSecretCDNHeader(cdnSecretHeader);
+        awsSystemParameterStore.setSecretCDNKey(cdnSecretKey);
 
         return awsSystemParameterStore;
     }

@@ -64,6 +64,12 @@ public class AwsSystemParameterStoreConfiguration {
     @Value("${redis.host}")
     private String redisHost;
 
+    @Value("${cdn.secret.header}")
+    private String cdnSecretHeader;
+
+    @Value("${cdn.secret.key}")
+    private String cdnSecretKey;
+
     private static final Logger logger = LoggerFactory.getLogger(AwsSystemParameterStoreConfiguration.class);
 
 
@@ -137,6 +143,9 @@ public class AwsSystemParameterStoreConfiguration {
         awsSystemParameterStore.setSecretKey(getParameterValue(jwtKeyParamName, false));
         awsSystemParameterStore.setJwtExpiration(Long.parseLong(getParameterValue(jwtExpiryParamName, false)));
 
+        //CDN bunny.net secret key
+        awsSystemParameterStore.setSecretCDNHeader(getParameterValue(cdnSecretHeader,false));
+        awsSystemParameterStore.setSecretCDNKey(getParameterValue(cdnSecretKey,false));
 
         return awsSystemParameterStore;
     }

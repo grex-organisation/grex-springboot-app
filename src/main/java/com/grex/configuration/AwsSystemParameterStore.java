@@ -9,5 +9,6 @@ public class AwsSystemParameterStore {
     private String googleRecaptchaSecretUrl;
     private String secretKey;
     private long jwtExpiration;
-
+    private String secretCDNHeader;
+    private String secretCDNKey;
 }

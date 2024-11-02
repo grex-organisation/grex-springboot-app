@@ -50,8 +50,8 @@ public class SecurityConfiguration {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/grex/auth/**")
-                        .permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/grex/auth/**").permitAll()
+                        .requestMatchers("/api/grex/cdn/**").hasAuthority("ROLE_CDN")
                         .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).
