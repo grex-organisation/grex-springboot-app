@@ -53,8 +53,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Check for the custom CDN authentication header only for CDN server Bunny.net
         // Custom logic for requests to /api/grex/ranking/** using header
         // Bypass authentication for /api/grex/auth/**, handled in SecurityFilterChain configuration
-        final String cdnAuthHeader = request.getHeader(awsSystemParameterStore.getSecretCDNHeader());
+
+        // Bunny.net has default setting to keep on hitting root url, it can't be blocked so use it as health check from cdn to application
+
         final String requestURI = request.getRequestURI();
+
+        if(requestURI.equals("/")){
+            response.setStatus(200);
+            response.getWriter().write("ok");
+            return;
+        }
+
+        final String cdnAuthHeader = request.getHeader(awsSystemParameterStore.getSecretCDNHeader());
 
         logger.info("request URI:"+requestURI);
         logger.info("CDN header is: "+cdnAuthHeader);
