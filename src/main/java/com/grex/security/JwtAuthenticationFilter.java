@@ -51,10 +51,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         // Check for the custom CDN authentication header only for CDN server Bunny.net
-        // Custom logic for requests to /api/grex/ranking/** using X-CDN-Auth header
+        // Custom logic for requests to /api/grex/ranking/** using header
         // Bypass authentication for /api/grex/auth/**, handled in SecurityFilterChain configuration
         final String cdnAuthHeader = request.getHeader(awsSystemParameterStore.getSecretCDNHeader());
         final String requestURI = request.getRequestURI();
+
+        logger.info("request URI:"+requestURI);
+        logger.info("CDN header is: "+cdnAuthHeader);
+        logger.info("CDN secret is:"+awsSystemParameterStore.getSecretCDNKey());
 
         if (requestURI.startsWith("/api/grex/cdn/") && cdnAuthHeader != null && cdnAuthHeader.equals(awsSystemParameterStore.getSecretCDNKey())) {
             // Assign a temporary role for CDN access
